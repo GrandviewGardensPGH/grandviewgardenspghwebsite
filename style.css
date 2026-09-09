@@ -1,0 +1,67 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-family: "malanga";
+    font-size: 10vw;
+    font-weight: lighter;
+    text-transform: uppercase;
+    line-height: 0.8;
+    padding-top: 0.2em;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100svh;
+    overflow: hidden;
+}
+
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 10px;
+    transform: scaleX(0%);
+    background-color: #000;
+    will-change: transform;
+    z-index: 2;
+}
+
+.progress-counter {
+    position: fixed;
+    bottom: 1em;
+    right: 2.5em;
+    color: #fff;
+    z-index: 2;
+}
+
+.scroller {
+    position: relative;
+    width: 200vw; /*recalculate based on # of sections in JS later*/
+    height: 100svh;
+    display: flex;
+    will-change: transform;
+    transform: translateX(0);
+}
+
+section {
+    position: relative;
+    height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
