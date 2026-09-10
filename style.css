@@ -5,18 +5,12 @@
 }
 
 h1 {
-    font-family: "malanga";
+    font-family: 'Courier New', Courier, monospace;
     font-size: 10vw;
     font-weight: lighter;
     text-transform: uppercase;
     line-height: 0.8;
     padding-top: 0.2em;
-}
-
-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 .container {
@@ -50,7 +44,7 @@ img {
 
 .scroller {
     position: relative;
-    width: 200vw; /*recalculate based on # of sections in JS later*/
+    width: max-content;/*recalculate based on # of sections in JS later*/
     height: 100svh;
     display: flex;
     will-change: transform;
@@ -65,3 +59,20 @@ section {
     align-items: center;
 }
 
+section img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body {
+    overflow: hidden;
+}
+/*mobile responsiveness*/
+
+/* @media (max-width: 768px) {
+    h1 {
+        font-size: 15vw;
+    }
+} */

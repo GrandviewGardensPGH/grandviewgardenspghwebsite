@@ -1,10 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const debug = true;
+    const log = (...messages) => {
+        if (debug) console.log("[scroll-debug]", ...messages);
+    };
+
     //selecting all key elements we are working with
     const container = document.querySelector(".container");
     const scroller = document.querySelector(".scroller");
     const progressCounter = document.querySelector(".progress-counter h1");
     const progressBar = document.querySelector(".progress-bar");
     const sections = Array.from(scroller.querySelectorAll("section"));
+
+    log("initialized", {
+        container: Boolean(container),
+        scroller: Boolean(scroller),
+        sections: sections.length,
+    });
 
     const smoothFactor = 0.05;
     const touchSensitivity = 2.5;
@@ -19,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isDown = false;
     let lastTouchX = 0;
+    let lastTouchY = 0;
     let touchVelocity = 0;
     let lastTouchTime = 0;
 
@@ -32,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .querySelectorAll(".clone-section")
             .forEach((clone) => clone.remove());
         const originalSections = Array.from(
-            scroller.querySelectorAll("section:not(.clone-section")
+            scroller.querySelectorAll("section:not(.clone-section)")
         );
 
         //if post clone removal, length is more than 0, set those sections as what we use for calc
@@ -45,13 +57,13 @@ document.addEventListener("DOMContentLoaded", () => {
             sequenceWidth += parseFloat(window.getComputedStyle(section).width);
         });
 
-        //cloning on both ends for smooth transition starts now (left side)
-        for (let i = -bufferSize; i=0;i++) {
-            templateSections.forEach((section, index) => {
+        // Clone complete sequences on both sides so the track can loop.
+        for (let i = 0; i < bufferSize; i++) {
+            templateSections.slice().reverse().forEach((section, index) => {
                 const clone = section.cloneNode(true);
-                clone.classList.add(".clone-section");
-                clone.setAttribute("data-clone-index",`${i}-${index}`);
-                scroller.appendChild(clone);
+                clone.classList.add("clone-section");
+                clone.setAttribute("data-clone-index", `-${i + 1}-${index}`);
+                scroller.prepend(clone);
 
             });
         };
@@ -65,20 +77,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         //cloning on both ends for smooth transition starts now (right side)
-        for (let i = 1; i < bufferSize; i++) {
+        for (let i = 0; i < bufferSize; i++) {
             templateSections.forEach((section, index) => {
                 const clone = section.cloneNode(true);
-                clone.classList.add(".clone-section");
-                clone.setAttribute("data-clone-index",`${i}-${index}`);
+                clone.classList.add("clone-section");
+                clone.setAttribute("data-clone-index", `${i + 1}-${index}`);
                 scroller.appendChild(clone);
 
             });
         };
 
-        //scroller.style.width = `${sequenceWidth * (1 + bufferSize * 2)})px`;
+        scroller.style.width = `${sequenceWidth * (1 + bufferSize * 2)}px`;
         targetScrollX = sequenceWidth * bufferSize;
         currentScrollX = targetScrollX;
-        scroller.style.transform = `translateX(-${currentScrollX}px)`
+        scroller.style.transform = `translateX(-${currentScrollX}px)`;
+
+        log("setup complete", {
+            sequenceWidth,
+            totalSections: scroller.querySelectorAll("section").length,
+            startOffset: currentScrollX,
+        });
 
         return sequenceWidth;
     };
@@ -112,11 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
         //position relative to base value 
         const currentPosition = (currentScrollX - basePosition) % sequenceWidth;
 
-        let percentage = (currentPosition / basePosition) * 100;
-
-        if (percentage < 0) {
-            percentage = 100 + percentage;
-        }
+        const normalizedPosition =
+            (currentPosition + sequenceWidth) % sequenceWidth;
+        const percentage = (normalizedPosition / sequenceWidth) * 100;
 
         const isWrapping =
         (lastPercentage > 80 && percentage < 20) ||
@@ -131,12 +147,14 @@ document.addEventListener("DOMContentLoaded", () => {
             progressBar.style.transform = `scaleX(${currentProgressScale})`
         }
 
+        lastPercentage = percentage;
+
     };
 
     //larpig is gradual move towards target 
     const animate = (sequenceWidth, forceProgressReset = false) => {
         currentScrollX = larp(currentScrollX, targetScrollX, smoothFactor);
-        scroller.style.transform = `transateX(-${currentScrollX}px)`;
+        scroller.style.transform = `translateX(-${currentScrollX}px)`;
 
         updateProgress(sequenceWidth,forceProgressReset);
 
@@ -147,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 smoothFactor
             );
 
-            progressBar.style.translate = `scaleX(${currentProgressScale})`
+            progressBar.style.transform = `scaleX(${currentProgressScale})`
         }
 
         if(Math.abs(targetScrollX - currentScrollX) < 0.01) {
@@ -166,21 +184,33 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         targetScrollX += e.deltaY;
 
+        log("wheel", {
+            deltaY: e.deltaY,
+            targetScrollX,
+            currentScrollX,
+        });
+
         const needReset = checkBoundaryAndReset(sequenceWidth);
 
         if (!isAnimating) {
             isAnimating = true;
             requestAnimationFrame(()=> animate(sequenceWidth, needReset));
         }
-    }, 
-    {passive: false;}
+    },
+    { passive: false }
     );
 
     container.addEventListener("touchstart", (e) => {
         isDown = true;
         lastTouchX= e.touches[0].clientX;
+        lastTouchY = e.touches[0].clientY;
         lastTouchTime = Date.now();
         targetScrollX = currentScrollX;
+        log("touchstart", {
+            isDown,
+            lastTouchX,
+            targetScrollX,
+        });
     });
 
     container.addEventListener("touchmove", (e) => {
@@ -188,7 +218,13 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const currentTouchX = e.touches[0].clientX;
-        const touchDelta = lastTouchX - currentTouchX;
+        const currentTouchY = e.touches[0].clientY;
+        const horizontalDelta = lastTouchX - currentTouchX;
+        const verticalDelta = lastTouchY - currentTouchY;
+        const touchDelta =
+            Math.abs(horizontalDelta) > Math.abs(verticalDelta)
+                ? horizontalDelta
+                : verticalDelta;
 
         targetScrollX += touchDelta * touchSensitivity;
 
@@ -199,9 +235,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         lastTouchX = currentTouchX;
+        lastTouchY = currentTouchY;
         lastTouchTime = currentTime;
 
         const needReset = checkBoundaryAndReset(sequenceWidth);
+
+        log("touch", {
+            isDown,
+            touchDelta,
+            timeDelta,
+            targetScrollX,
+            currentTouchX,
+            touchVelocity,
+            needReset
+        });
 
         if (!isAnimating) {
             isAnimating = true;
@@ -211,12 +258,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     container.addEventListener("touchend", () => {
         isDown = false;
+        log("touchend", {
+            isDown,
+        });
+        
 
         if(Math.abs(touchVelocity) > 0.01) {
             targetScrollX += touchVelocity * 20;
 
             const decayVelocity = () => {
-                touchVelocity += 0.95;
+                touchVelocity *= 0.95;
 
                 if(Math.abs(touchVelocity) > 0.01) {
                     targetScrollX += touchVelocity;
@@ -232,6 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             requestAnimationFrame(decayVelocity);
         } 
-    });
+    },{ passive: false }
+    );
 });
 
