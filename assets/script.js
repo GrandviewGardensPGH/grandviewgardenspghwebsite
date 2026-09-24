@@ -56,13 +56,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const easedCenterDistance =
                 distanceFromCenter * distanceFromCenter * (3 - 2 * distanceFromCenter);
             const hiddenDistance = Number(layer.dataset.revealDistance || 28);
+            const restOffset = parseFloat(
+                getComputedStyle(layer).getPropertyValue("--reveal-rest-offset")
+            ) || 0;
             const rotation = sectionProgress <= 0.5
                 ? 270 + sectionProgress * 180
                 : (sectionProgress - 0.5) * 180;
-            const translateY = hiddenDistance * easedCenterDistance;
+            const translateY =
+                hiddenDistance * easedCenterDistance +
+                restOffset * (1 - easedCenterDistance);
 
             layer.style.transform =
                 `translate3d(0, ${translateY}%, 0) rotate(${rotation}deg)`;
+
+            if (layer.dataset.revealFade !== undefined) {
+                layer.style.opacity = 1 - easedCenterDistance;
+            }
         });
     };
 

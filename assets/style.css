@@ -146,9 +146,9 @@ section {
 
 .hill-foreground {
     z-index: 4;
-    right: 0;
+    right: -1rem;
     bottom: 0;
-    width: 100%;
+    width: calc(100% + 2rem);
     height: var(--hill-height);
     object-fit: cover;
     object-position: center top;
@@ -172,6 +172,82 @@ section {
 .about-content {
     width: min(100%, 70rem);
     height: 100%;
+}
+
+.about-stage {
+    position: relative;
+    flex: 0 0 auto;
+    width: calc(100% + 2rem);
+    height: calc(100svh - var(--nav-height));
+    margin-left: -1rem;
+    overflow: visible;
+}
+
+.about {
+    --hill-height: 58%;
+    padding-bottom: 0;
+    overflow: visible;
+}
+
+.about-layer {
+    position: absolute;
+    display: block;
+    height: auto;
+    pointer-events: none;
+}
+
+.about-sign {
+    z-index: 2;
+    --reveal-rest-offset: 12%;
+    left: 8%;
+    bottom: calc(var(--hill-height) - clamp(10%, 15svh, 18%));
+    width: clamp(12rem, 22vw, 22rem);
+    transform-origin: 50% 100%;
+    will-change: transform, opacity;
+}
+
+.about-card {
+    z-index: 5;
+    top: 17%;
+    width: clamp(12rem, 22vw, 21rem);
+}
+
+.about-card-one {
+    left: 39%;
+    transform: translateX(-50%);
+}
+
+.about-card-two {
+    left: 66%;
+    transform: translateX(-50%);
+}
+
+.about-card-three {
+    left: 93%;
+    transform: translateX(-50%);
+}
+
+.about-marigold {
+    z-index: 4;
+    left: 58%;
+    bottom: calc(var(--hill-height) - clamp(2rem, 4svh, 4rem));
+    width: clamp(7rem, 14vw, 13rem);
+    transform: translateX(-50%);
+}
+
+.about-herbs {
+    z-index: 4;
+    right: 16%;
+    bottom: calc(var(--hill-height) - clamp(2rem, 4svh, 4rem));
+    width: clamp(9rem, 18vw, 17rem);
+}
+
+.about-stage .hill-foreground {
+    z-index: 3;
+}
+
+.about-hill {
+    height: 58%;
 }
 
 body {
@@ -224,6 +300,54 @@ body {
 
     .welcome {
         --hill-height: 42%;
+    }
+
+    .about-stage {
+        width: calc(100% + 2rem);
+    }
+
+    .about {
+        --hill-height: 42%;
+    }
+
+    .about-sign {
+        left: 8%;
+        --reveal-rest-offset: 0%;
+        bottom: calc(var(--hill-height) - clamp(5%, 8svh, 10%));
+        width: clamp(9rem, 32vw, 13rem);
+    }
+
+    .about-card {
+        top: 16%;
+        width: clamp(9rem, 30vw, 14rem);
+    }
+
+    .about-card-one {
+        left: 34%;
+    }
+
+    .about-card-two {
+        left: 66%;
+    }
+
+    .about-card-three {
+        left: 98%;
+    }
+
+    .about-marigold {
+        left: 55%;
+        bottom: calc(var(--hill-height) - 2rem);
+        width: clamp(5rem, 20vw, 8rem);
+    }
+
+    .about-herbs {
+        right: 8%;
+        bottom: calc(var(--hill-height) - 2rem);
+        width: clamp(6rem, 24vw, 11rem);
+    }
+
+    .about-hill {
+        height: 48%;
     }
 }
 /*mobile responsiveness*/
