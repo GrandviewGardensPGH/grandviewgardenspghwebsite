@@ -1,0 +1,20 @@
+{
+  "name": "grandviewgardenspghwebsite",
+  "version": "1.0.0",
+  "description": "Static website for Grandview Garden. Connects to CloudFlare.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrandviewGardensPGH/grandviewgardenspghwebsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GrandviewGardensPGH/grandviewgardenspghwebsite/issues"
+  },
+  "homepage": "https://github.com/GrandviewGardensPGH/grandviewgardenspghwebsite#readme"
+}
