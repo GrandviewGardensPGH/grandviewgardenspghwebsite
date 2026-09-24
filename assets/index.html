@@ -5,28 +5,60 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Grandview Gardens</title>
         <link rel="icon" type="image/x-icon" href="Logo Asset/GGLogo.svg">   
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="style.css?v=20260924" />
     </head>
     <body>
-        <div class="container">
-            <div class="progress-bar">
-                
+        <div class="nav-bar">
+            <div class="nav-links">
+                <a href="#welcome" aria-label="Home">
+                    <img src="Nav assets/logo_Home_Nav.png" alt="Grandview Gardens Logo" />
+                </a>
+                <a href="#about" aria-label="About">
+                    <img src="Nav assets/about_Nav.png" alt="About Icon"/>
+                </a>
+                <a href="#offerings" aria-label="Offerings">
+                    <img src="Nav assets/offerings_Nav.png" alt="Offerings Icon"/>
+                </a>
+                <a href="#visit" aria-label="Visit">
+                    <img src="Nav assets/visit_Nav.png" alt="Visit Icon"/>
+                </a>
+                <a href="#connect" aria-label="Contact">
+                    <img src="Nav assets/contact_Nav.png" alt="Contact Icon"/>
+                </a>
+                <a href="#donate" aria-label="Donate">
+                    <img src="Nav assets/donate_Nav.png" alt="Donate Icon"/>
+                </a>
             </div>
+        </div>
+
+        <div class="container">
+            
+            <div class="progress-bar">
+            </div>
+
             <div class="progress-counter">
                 <h1>0</h1>
             </div>
+
             <div class="scroller">
-                <section class="bg1-img">
-                    <img src="Infinite Scroll Background/1.png" alt="" />
+                <section id="welcome" class="welcome">
+                    <div class="welcome-stage">
+                        <img src="Welcome About Assets/welcome_Banner.png" alt="Welcome to Grandview Gardens" class="welcome-banner welcome-layer" />
+                        <img src="Welcome About Assets/gardening_Doodle_About.png.png" alt="Gardener illustration" class="gardening-doodle welcome-layer" data-scroll-reveal="flip-up" />
+                        <img src="Hill Foreground Assets/summer_Hill_Forground.png" alt="Grandview Gardens hillside" class="hill-foreground welcome-layer" />
+                    </div>
                 </section>
-                <section class="bg2-img">
-                    <img src="Infinite Scroll Background/2.png" alt="" />
+                <section id="about" class="about">
+                    <div class="about-content"></div>
+                    </div>
                 </section>
-                <section class="bg3-img">
-                    <img src="Infinite Scroll Background/3.png" alt="" />
+                <section id="offerings" class="offerings">
                 </section>
-                <section class="bg4-img">
-                    <img src="Infinite Scroll Background/4.png" alt="" />
+                <section id="visit" class="visit">
+                </section>
+                <section id="connect" class="connect">
+                </section>
+                <section id="donate" class="donate">
                 </section>
             </div>
         </div>

@@ -4,11 +4,18 @@
     box-sizing: border-box;
 }
 
+:root {
+    --nav-height: clamp(5.5rem, 12vw, 8rem);
+}
+
 h1 {
     font-family: 'Courier New', Courier, monospace;
     font-size: 10vw;
     font-weight: lighter;
     text-transform: uppercase;
+     padding: 20px;
+     background-color: #f0f0f0;
+     border: 1px solid #ccc;
     line-height: 0.8;
     padding-top: 0.2em;
 }
@@ -17,9 +24,11 @@ h1 {
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 1;
     width: 100vw;
     height: 100svh;
     overflow: hidden;
+    background: #9ed5e8 url("Background Assets/sky_Furthest_Background.png") center / cover no-repeat;
 }
 
 .progress-bar {
@@ -32,6 +41,50 @@ h1 {
     background-color: #000;
     will-change: transform;
     z-index: 2;
+}
+
+.nav-bar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: var(--nav-height);
+    padding: max(0.75rem, env(safe-area-inset-top)) 1rem 0.75rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    gap: clamp(0.5rem, 2.5vw, 2rem);
+    width: min(100%, 70rem);
+    margin: 0 auto;
+}
+
+.nav-links a {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-links a:first-child {
+    margin-right: clamp(1rem, 4vw, 5rem);
+}
+
+.nav-links img {
+    display: block;
+    width: clamp(2.75rem, 8vw, 6rem);
+    height: auto;
+    max-height: 4.5rem;
+    object-fit: contain;
+}
+
+.nav-links a:first-child img {
+    width: clamp(6rem, 20vw, 17rem);
+    max-height: none;
 }
 
 .progress-counter {
@@ -53,21 +106,125 @@ h1 {
 
 section {
     position: relative;
+    flex: 0 0 100vw;
+    width: 100vw;
     height: 100svh;
+    padding: var(--nav-height) 1rem 1rem;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    overflow: hidden;
 }
 
-section img {
+.welcome-stage {
+    position: relative;
+    isolation: isolate;
+    flex: 0 0 auto;
+    width: calc(100% + 2rem);
+    height: calc(100svh - var(--nav-height));
+    max-width: none;
+    margin-left: -1rem;
+    overflow: visible;
+}
+
+.welcome-layer {
+    position: absolute;
     display: block;
+    height: auto;
+    pointer-events: none;
+}
+
+.welcome-banner {
+    z-index: 100 !important;
+    top: 7%;
+    left: 38%;
+    width: clamp(18rem, 32vw, 40rem);
+    height: auto;
+    max-width: 62%;
+    transform: translateX(-50%);
+}
+
+.hill-foreground {
+    z-index: 4;
+    right: 0;
+    bottom: 0;
     width: 100%;
-    height: 100%;
+    height: var(--hill-height);
     object-fit: cover;
+    object-position: center top;
+}
+
+.welcome {
+    --hill-height: 48%;
+    padding-bottom: 0;
+    overflow: visible;
+}
+
+.gardening-doodle {
+    z-index: 3;
+    bottom: calc(var(--hill-height) - clamp(2.5rem, 4vw, 4rem));
+    right: 18%;
+    width: clamp(6rem, 24svh, 16rem);
+    transform-origin: 50% 100%;
+    will-change: transform;
+}
+
+.about-content {
+    width: min(100%, 70rem);
+    height: 100%;
 }
 
 body {
     overflow: hidden;
+    background: #9ed5e8;
+}
+
+@media (max-width: 40rem) {
+    .nav-bar {
+        overflow-x: auto;
+        padding-right: 0.75rem;
+        padding-left: 0.75rem;
+    }
+
+    .nav-links {
+        justify-content: flex-start;
+        width: max-content;
+        min-width: 100%;
+    }
+
+    .nav-links img {
+        width: clamp(2.5rem, 14vw, 4rem);
+    }
+
+    .nav-links a:first-child img {
+        width: clamp(5rem, 22vw, 8rem);
+    }
+
+    .welcome-banner {
+        top: 8%;
+        width: auto;
+        height: 46%;
+        max-width: 76%;
+    }
+
+    .gardening-doodle {
+        top: auto;
+        right: 8%;
+        width: clamp(5rem, 20svh, 10rem);
+        bottom: var(--hill-height);
+    }
+
+    .hill-foreground {
+        height: var(--hill-height);
+    }
+
+    .welcome-stage {
+        --hill-height: 42%;
+    }
+
+    .welcome {
+        --hill-height: 42%;
+    }
 }
 /*mobile responsiveness*/
 

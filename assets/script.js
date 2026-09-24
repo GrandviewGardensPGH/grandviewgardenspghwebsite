@@ -37,6 +37,35 @@ document.addEventListener("DOMContentLoaded", () => {
     //function that calcs distance 
     const larp = (start, end, factor) =>  start + (end - start) * factor;
 
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    // Maps a section's distance from the viewport center to a reusable layer reveal.
+    const updateScrollRevealLayers = () => {
+        document.querySelectorAll("[data-scroll-reveal]").forEach((layer) => {
+            const section = layer.closest("section");
+            if (!section) return;
+
+            const sectionLeft = section.getBoundingClientRect().left;
+            const sectionWidth = section.getBoundingClientRect().width;
+            const sectionProgress = clamp(
+                0.5 - sectionLeft / (sectionWidth * 2),
+                0,
+                1
+            );
+            const distanceFromCenter = Math.abs(sectionProgress - 0.5) * 2;
+            const easedCenterDistance =
+                distanceFromCenter * distanceFromCenter * (3 - 2 * distanceFromCenter);
+            const hiddenDistance = Number(layer.dataset.revealDistance || 28);
+            const rotation = sectionProgress <= 0.5
+                ? 270 + sectionProgress * 180
+                : (sectionProgress - 0.5) * 180;
+            const translateY = hiddenDistance * easedCenterDistance;
+
+            layer.style.transform =
+                `translate3d(0, ${translateY}%, 0) rotate(${rotation}deg)`;
+        });
+    };
+
     //function for duplicating sections at end for infinite scroll
     const setupScroll = () => {
         //first remove any clone sections from calculations (we only want original html sections)
@@ -152,11 +181,14 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     //larpig is gradual move towards target
-    const animate = (sequenceWidth, forceProgressReset = false) => {
+    let sequenceWidth = 0;
+
+    const animate = (forceProgressReset = false) => {
         currentScrollX = larp(currentScrollX, targetScrollX, smoothFactor);
         scroller.style.transform = `translateX(-${currentScrollX}px)`;
+        updateScrollRevealLayers();
 
-        updateProgress(sequenceWidth,forceProgressReset);
+        updateProgress(sequenceWidth, forceProgressReset);
 
         if(!forceProgressReset) {
             currentProgressScale = larp (
@@ -171,14 +203,62 @@ document.addEventListener("DOMContentLoaded", () => {
         if(Math.abs(targetScrollX - currentScrollX) < 0.01) {
             isAnimating = false;
         } else {
-            requestAnimationFrame(() => animate(sequenceWidth))
+            requestAnimationFrame(() => animate())
         }
     };
 
     //scrolling response (touch and mouse)
-    const sequenceWidth = setupScroll();
+    sequenceWidth = setupScroll();
     updateProgress(sequenceWidth, true);
+    updateScrollRevealLayers();
     progressBar.style.transform = `scaleX(${currentProgressScale})`;
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+            const oldSequenceWidth = sequenceWidth;
+            const oldPosition = currentScrollX - oldSequenceWidth * bufferSize;
+            const progress = ((oldPosition % oldSequenceWidth) + oldSequenceWidth) % oldSequenceWidth / oldSequenceWidth;
+
+            sequenceWidth = setupScroll();
+            currentScrollX = sequenceWidth * bufferSize + progress * sequenceWidth;
+            targetScrollX = currentScrollX;
+            scroller.style.transform = `translateX(-${currentScrollX}px)`;
+            updateProgress(sequenceWidth, true);
+            updateScrollRevealLayers();
+            progressBar.style.transform = `scaleX(${currentProgressScale})`;
+            isAnimating = false;
+        }, 100);
+    });
+
+    document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            const sectionIndex = sections.findIndex(
+                (section) => `#${section.id}` === link.getAttribute("href")
+            );
+
+            if (sectionIndex < 0) return;
+
+            const sectionOffset = sections
+                .slice(0, sectionIndex)
+                .reduce(
+                    (offset, section) =>
+                        offset + parseFloat(window.getComputedStyle(section).width),
+                    0
+                );
+
+            targetScrollX = sequenceWidth * bufferSize + sectionOffset;
+            history.replaceState(null, "", link.getAttribute("href"));
+
+            if (!isAnimating) {
+                isAnimating = true;
+                requestAnimationFrame(() => animate());
+            }
+        });
+    });
 
     container.addEventListener("wheel", (e) => {
         e.preventDefault();
@@ -194,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!isAnimating) {
             isAnimating = true;
-            requestAnimationFrame(()=> animate(sequenceWidth, needReset));
+            requestAnimationFrame(()=> animate(needReset));
         }
     },
     { passive: false }
@@ -252,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!isAnimating) {
             isAnimating = true;
-            requestAnimationFrame(()=> animate(sequenceWidth, needReset));
+            requestAnimationFrame(()=> animate(needReset));
         }
     });
 
