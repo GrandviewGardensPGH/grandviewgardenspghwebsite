@@ -2,7 +2,7 @@
   "name": "grandviewgardenspghwebsite",
   "version": "1.0.0",
   "description": "Static website for Grandview Garden. Connects to CloudFlare.",
-  "main": "script.js",
+  "main": "assets/script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

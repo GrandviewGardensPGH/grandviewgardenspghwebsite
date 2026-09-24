@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
             scroller.querySelectorAll("section:not(.clone-section)")
         );
 
-        //if post clone removal, length is more than 0, set those sections as what we use for calc
+        //if post clone removal, length is more than 0, set those as what we use for calc
         const templateSections =
             originalSections.length > 0 ? originalSections : sections;
 
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     };
 
-    //larpig is gradual move towards target 
+    //larpig is gradual move towards target
     const animate = (sequenceWidth, forceProgressReset = false) => {
         currentScrollX = larp(currentScrollX, targetScrollX, smoothFactor);
         scroller.style.transform = `translateX(-${currentScrollX}px)`;
@@ -286,4 +286,3 @@ document.addEventListener("DOMContentLoaded", () => {
     },{ passive: false }
     );
 });
-
