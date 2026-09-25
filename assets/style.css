@@ -28,7 +28,7 @@ h1 {
     width: 100vw;
     height: 100svh;
     overflow: hidden;
-    background: #9ed5e8 url("Background Assets/sky_Furthest_Background.png") center / cover no-repeat;
+    background: #9ed5e8;
 }
 
 .progress-bar {
@@ -114,6 +114,48 @@ section {
     justify-content: center;
     align-items: flex-start;
     overflow: hidden;
+    isolation: isolate;
+}
+
+.sky-layer,
+.cloud-layer {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    user-select: none;
+}
+
+.sky-layer {
+    z-index: 0;
+    left: -50%;
+    right: auto;
+    width: 200%;
+    object-fit: cover;
+    will-change: transform;
+}
+
+.cloud-layer {
+    z-index: 1;
+    overflow: visible;
+    will-change: transform;
+}
+
+.cloud-layer img {
+    position: absolute;
+    left: var(--cloud-left);
+    top: var(--cloud-top);
+    width: var(--cloud-width);
+    height: auto;
+    opacity: var(--cloud-opacity);
+    transform: translate3d(0, 0, 0);
+}
+
+.welcome-stage,
+.about-stage {
+    z-index: 2;
 }
 
 .welcome-stage {
@@ -138,20 +180,23 @@ section {
     z-index: 100 !important;
     top: 7%;
     left: 38%;
-    width: clamp(18rem, 32vw, 40rem);
+    width: clamp(18rem, min(34vw, 58svh), 44rem);
     height: auto;
-    max-width: 62%;
+    max-width: min(62%, calc(100% - 2rem));
+    max-height: calc(100% - 2rem);
     transform: translateX(-50%);
+    object-fit: contain;
 }
 
 .hill-foreground {
     z-index: 4;
-    right: -1rem;
+    right: 0;
     bottom: 0;
-    width: calc(100% + 2rem);
+    width: 100%;
     height: var(--hill-height);
     object-fit: cover;
     object-position: center top;
+    will-change: transform;
 }
 
 .welcome {
@@ -164,7 +209,7 @@ section {
     z-index: 3;
     bottom: calc(var(--hill-height) - clamp(2.5rem, 4vw, 4rem));
     right: 18%;
-    width: clamp(6rem, 24svh, 16rem);
+    width: clamp(7rem, min(26svh, 16vw), 18rem);
     transform-origin: 50% 100%;
     will-change: transform;
 }
@@ -201,7 +246,7 @@ section {
     --reveal-rest-offset: 12%;
     left: 8%;
     bottom: calc(var(--hill-height) - clamp(10%, 15svh, 18%));
-    width: clamp(12rem, 22vw, 22rem);
+    width: clamp(14rem, min(25vw, 42svh), 28rem);
     transform-origin: 50% 100%;
     will-change: transform, opacity;
 }
@@ -209,7 +254,7 @@ section {
 .about-card {
     z-index: 5;
     top: 17%;
-    width: clamp(12rem, 22vw, 21rem);
+    width: clamp(14rem, min(24vw, 42svh), 27rem);
 }
 
 .about-card-one {
@@ -231,7 +276,7 @@ section {
     z-index: 4;
     left: 58%;
     bottom: calc(var(--hill-height) - clamp(2rem, 4svh, 4rem));
-    width: clamp(7rem, 14vw, 13rem);
+    width: clamp(8rem, min(16vw, 26svh), 16rem);
     transform: translateX(-50%);
 }
 
@@ -239,7 +284,7 @@ section {
     z-index: 4;
     right: 16%;
     bottom: calc(var(--hill-height) - clamp(2rem, 4svh, 4rem));
-    width: clamp(9rem, 18vw, 17rem);
+    width: clamp(10rem, min(20vw, 32svh), 20rem);
 }
 
 .about-stage .hill-foreground {
@@ -253,6 +298,14 @@ section {
 body {
     overflow: hidden;
     background: #9ed5e8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sky-layer,
+    .cloud-layer,
+    .hill-foreground {
+        will-change: auto;
+    }
 }
 
 @media (max-width: 40rem) {
@@ -279,8 +332,9 @@ body {
     .welcome-banner {
         top: 8%;
         width: auto;
-        height: 46%;
-        max-width: 76%;
+        height: auto;
+        max-width: min(76%, calc(100% - 2rem));
+        max-height: 58%;
     }
 
     .gardening-doodle {
@@ -311,43 +365,47 @@ body {
     }
 
     .about-sign {
-        left: 8%;
+        left: 3%;
         --reveal-rest-offset: 0%;
         bottom: calc(var(--hill-height) - clamp(5%, 8svh, 10%));
-        width: clamp(9rem, 32vw, 13rem);
+        width: clamp(8rem, 30vw, 12rem);
     }
 
     .about-card {
-        top: 16%;
-        width: clamp(9rem, 30vw, 14rem);
+        top: 20%;
+        width: clamp(8rem, 36vw, 11rem);
     }
 
     .about-card-one {
-        left: 34%;
+        left: 19%;
     }
 
     .about-card-two {
-        left: 66%;
+        left: 50%;
     }
 
     .about-card-three {
-        left: 98%;
+        left: 81%;
     }
 
     .about-marigold {
-        left: 55%;
+        left: 53%;
         bottom: calc(var(--hill-height) - 2rem);
         width: clamp(5rem, 20vw, 8rem);
     }
 
     .about-herbs {
-        right: 8%;
+        right: 4%;
         bottom: calc(var(--hill-height) - 2rem);
-        width: clamp(6rem, 24vw, 11rem);
+        width: clamp(6rem, 24vw, 10rem);
     }
 
     .about-hill {
         height: 48%;
+    }
+
+    section {
+        padding-bottom: 0;
     }
 }
 /*mobile responsiveness*/

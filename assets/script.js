@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressCounter = document.querySelector(".progress-counter h1");
     const progressBar = document.querySelector(".progress-bar");
     const sections = Array.from(scroller.querySelectorAll("section"));
+    const skyAsset = "Background Assets/sky_Furthest_Background.png";
+    const cloudAsset = "Background Assets/clouds_Background.png";
 
     log("initialized", {
         container: Boolean(container),
@@ -38,6 +40,65 @@ document.addEventListener("DOMContentLoaded", () => {
     const larp = (start, end, factor) =>  start + (end - start) * factor;
 
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const seededRandom = (seed) => {
+        let value = seed;
+        return () => {
+            value = (value * 9301 + 49297) % 233280;
+            return value / 233280;
+        };
+    };
+
+    const addBackdropLayers = () => {
+        sections.forEach((section, sectionIndex) => {
+            if (section.querySelector(".sky-layer")) return;
+
+            const sky = document.createElement("img");
+            sky.className = "sky-layer";
+            sky.src = skyAsset;
+            sky.alt = "";
+            sky.setAttribute("aria-hidden", "true");
+            sky.dataset.parallaxSpeed = "0.08";
+            sky.dataset.parallaxMode = "global";
+            section.prepend(sky);
+
+            const random = seededRandom(sectionIndex + 17);
+            const cloudCount = 3 + Math.floor(random() * 3);
+            const clouds = document.createElement("div");
+            clouds.className = "cloud-layer";
+            clouds.setAttribute("aria-hidden", "true");
+            const hill = section.querySelector(".hill-foreground");
+            if (hill) hill.dataset.parallaxSpeed = "0.82";
+
+            for (let cloudIndex = 0; cloudIndex < cloudCount; cloudIndex += 1) {
+                const cloud = document.createElement("img");
+                cloud.src = cloudAsset;
+                cloud.alt = "";
+                cloud.style.setProperty("--cloud-left", `${-10 + random() * 105}%`);
+                cloud.style.setProperty("--cloud-top", `${8 + random() * 42}%`);
+                cloud.style.setProperty("--cloud-width", `${clamp(18 + random() * 20, 18, 38)}%`);
+                cloud.style.setProperty("--cloud-opacity", `${0.5 + random() * 0.35}`);
+                cloud.dataset.parallaxSpeed = `${0.18 + random() * 0.22}`;
+                clouds.appendChild(cloud);
+            }
+
+            section.appendChild(clouds);
+        });
+    };
+
+    const updateParallaxLayers = () => {
+        document.querySelectorAll("[data-parallax-speed]").forEach((layer) => {
+            const section = layer.closest("section");
+            if (!section) return;
+
+            const speed = Number(layer.dataset.parallaxSpeed);
+            const sectionLeft = section.getBoundingClientRect().left;
+            const offset = layer.dataset.parallaxMode === "global"
+                ? currentScrollX * (1 - speed)
+                : -(1 - speed) * sectionLeft;
+            layer.style.transform = `translate3d(${offset}px, 0, 0)`;
+        });
+    };
 
     // Maps a section's distance from the viewport center to a reusable layer reveal.
     const updateScrollRevealLayers = () => {
@@ -74,6 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     };
+
+    addBackdropLayers();
 
     //function for duplicating sections at end for infinite scroll
     const setupScroll = () => {
@@ -196,6 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentScrollX = larp(currentScrollX, targetScrollX, smoothFactor);
         scroller.style.transform = `translateX(-${currentScrollX}px)`;
         updateScrollRevealLayers();
+        updateParallaxLayers();
 
         updateProgress(sequenceWidth, forceProgressReset);
 
@@ -220,6 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sequenceWidth = setupScroll();
     updateProgress(sequenceWidth, true);
     updateScrollRevealLayers();
+    updateParallaxLayers();
     progressBar.style.transform = `scaleX(${currentProgressScale})`;
 
     let resizeTimer;
@@ -236,6 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
             scroller.style.transform = `translateX(-${currentScrollX}px)`;
             updateProgress(sequenceWidth, true);
             updateScrollRevealLayers();
+            updateParallaxLayers();
             progressBar.style.transform = `scaleX(${currentProgressScale})`;
             isAnimating = false;
         }, 100);
