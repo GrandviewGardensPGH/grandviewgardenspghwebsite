@@ -50,17 +50,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const addBackdropLayers = () => {
-        sections.forEach((section, sectionIndex) => {
-            if (section.querySelector(".sky-layer")) return;
-
+        if (!container.querySelector(".sky-layer")) {
             const sky = document.createElement("img");
             sky.className = "sky-layer";
             sky.src = skyAsset;
             sky.alt = "";
             sky.setAttribute("aria-hidden", "true");
-            sky.dataset.parallaxSpeed = "0.08";
-            sky.dataset.parallaxMode = "global";
-            section.prepend(sky);
+            container.prepend(sky);
+        }
+
+        sections.forEach((section, sectionIndex) => {
+            if (section.querySelector(".cloud-layer")) return;
 
             const random = seededRandom(sectionIndex + 17);
             const cloudCount = 3 + Math.floor(random() * 3);
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
             clouds.className = "cloud-layer";
             clouds.setAttribute("aria-hidden", "true");
             const hill = section.querySelector(".hill-foreground");
-            if (hill) hill.dataset.parallaxSpeed = "0.82";
+            if (hill) hill.dataset.parallaxSpeed = "1";
 
             for (let cloudIndex = 0; cloudIndex < cloudCount; cloudIndex += 1) {
                 const cloud = document.createElement("img");
@@ -82,7 +82,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 clouds.appendChild(cloud);
             }
 
-            section.appendChild(clouds);
+            const stage = section.querySelector(".welcome-stage, .about-stage, .content-stage");
+            if (stage) {
+                section.insertBefore(clouds, stage);
+            } else {
+                section.appendChild(clouds);
+            }
         });
     };
 
@@ -90,12 +95,13 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll("[data-parallax-speed]").forEach((layer) => {
             const section = layer.closest("section");
             if (!section) return;
-
+            if (layer.classList.contains("hill-foreground")) {
+                layer.style.transform = "none";
+                return;
+            }
             const speed = Number(layer.dataset.parallaxSpeed);
             const sectionLeft = section.getBoundingClientRect().left;
-            const offset = layer.dataset.parallaxMode === "global"
-                ? currentScrollX * (1 - speed)
-                : -(1 - speed) * sectionLeft;
+            const offset = -(1 - speed) * sectionLeft;
             layer.style.transform = `translate3d(${offset}px, 0, 0)`;
         });
     };
@@ -252,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     };
 
-    //larpig is gradual move towards target
+    //larping is gradual move towards target
     let sequenceWidth = 0;
 
     const animate = (forceProgressReset = false) => {

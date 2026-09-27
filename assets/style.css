@@ -129,17 +129,18 @@ section {
 }
 
 .sky-layer {
-    z-index: 0;
-    left: -50%;
-    right: auto;
-    width: 200%;
+    z-index: 0 !important;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    will-change: transform;
 }
 
 .cloud-layer {
-    z-index: 1;
-    overflow: visible;
+    z-index: 1 !important;
+    overflow: hidden;
+    isolation: isolate;
     will-change: transform;
 }
 
@@ -155,7 +156,15 @@ section {
 
 .welcome-stage,
 .about-stage {
-    z-index: 2;
+    position: relative;
+    z-index: 1;
+    z-index: 10 !important;
+    isolation: isolate;
+}
+
+.welcome-stage > *,
+.about-stage > * {
+    position: absolute;
 }
 
 .welcome-stage {
@@ -197,10 +206,11 @@ section {
     object-fit: cover;
     object-position: center top;
     will-change: transform;
+    display: block;
 }
 
 .welcome {
-    --hill-height: 48%;
+    --hill-height: 42%;
     padding-bottom: 0;
     overflow: visible;
 }
@@ -229,7 +239,7 @@ section {
 }
 
 .about {
-    --hill-height: 58%;
+    --hill-height: 48%;
     padding-bottom: 0;
     overflow: visible;
 }
@@ -292,7 +302,7 @@ section {
 }
 
 .about-hill {
-    height: 58%;
+    height: var(--hill-height);
 }
 
 body {
@@ -361,7 +371,7 @@ body {
     }
 
     .about {
-        --hill-height: 42%;
+        --hill-height: 48%;
     }
 
     .about-sign {
@@ -401,7 +411,7 @@ body {
     }
 
     .about-hill {
-        height: 48%;
+        height: var(--hill-height);
     }
 
     section {
@@ -415,3 +425,636 @@ body {
         font-size: 15vw;
     }
 } */
+
+/* Responsive scene baseline: mobile first, then enhance for larger screens. */
+.nav-bar {
+    height: clamp(4.5rem, 18svh, 6.5rem);
+    overflow: visible;
+    padding-inline: max(0.75rem, env(safe-area-inset-left))
+        max(0.75rem, env(safe-area-inset-right));
+}
+
+:root {
+    --nav-height: clamp(4.5rem, 18svh, 6.5rem);
+}
+
+.nav-links {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) repeat(5, minmax(0, 1fr));
+    gap: clamp(0.15rem, 1vw, 0.75rem);
+    width: 100%;
+    overflow: visible;
+}
+
+.nav-links a,
+.nav-links a:first-child {
+    min-width: 0;
+    height: 100%;
+    margin: 0;
+}
+
+.nav-links img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.nav-links a:first-child img {
+    width: 100%;
+}
+
+section {
+    width: 100vw;
+    flex-basis: 100vw;
+    height: 100svh;
+    min-height: 100svh;
+    padding: var(--nav-height) 0 0;
+    overflow: hidden;
+}
+
+.welcome-stage,
+.about-stage {
+    width: 100%;
+    height: calc(100svh - var(--nav-height));
+    margin-left: 0;
+    overflow: visible;
+}
+
+.hill-foreground {
+    right: 0;
+    width: 100%;
+    height: var(--hill-height);
+    object-fit: cover;
+    object-position: center top;
+    transform: none !important;
+}
+
+.welcome-banner {
+    left: 40%;
+    top: 8%;
+    width: min(76vw, 38svh);
+    max-width: 76%;
+    max-height: 58%;
+}
+
+.gardening-doodle {
+    right: 8%;
+    width: min(24vw, 24svh);
+}
+
+.about-sign {
+    left: 4%;
+    width: min(30vw, 28svh);
+}
+
+.about-card {
+    width: min(30vw, 22svh);
+}
+
+.about-card-one {
+    left: 19%;
+}
+
+.about-card-two {
+    left: 50%;
+}
+
+.about-card-three {
+    left: 81%;
+}
+
+.about-marigold {
+    width: min(20vw, 18svh);
+}
+
+.about-herbs {
+    width: min(24vw, 24svh);
+}
+
+.welcome,
+.welcome-stage {
+    --hill-height: min(46svh, 46.93vw);
+}
+
+.about {
+    --hill-height: min(52svh, 53.18vw);
+}
+
+@media (min-width: 40.0625rem) {
+    :root {
+        --nav-height: clamp(5.5rem, 10svh, 8rem);
+    }
+
+    .nav-bar {
+        padding-block: 0.75rem;
+    }
+
+    .welcome {
+        --hill-height: min(46svh, 46.93vw);
+    }
+
+    .about {
+        --hill-height: min(52svh, 53.18vw);
+    }
+
+    .nav-links {
+        width: min(100%, 70rem);
+        overflow: visible;
+    }
+
+    .nav-links img {
+        width: clamp(2.75rem, 6vw, 6rem);
+    }
+
+    .nav-links a:first-child img {
+        width: clamp(6rem, 16vw, 14rem);
+    }
+
+    .welcome-banner {
+        width: min(42vw, 58svh, 44rem);
+        max-width: 62%;
+    }
+
+    .gardening-doodle {
+        right: 18%;
+        width: min(16vw, 26svh, 18rem);
+    }
+
+    .about-sign {
+        left: 8%;
+        width: min(25vw, 42svh, 28rem);
+    }
+
+    .about-card {
+        width: min(24vw, 42svh, 27rem);
+    }
+
+    .about-marigold {
+        width: min(16vw, 26svh, 16rem);
+    }
+
+    .about-herbs {
+        width: min(20vw, 32svh, 20rem);
+    }
+}
+
+.nav-bar {
+    overflow: visible;
+}
+
+.nav-links,
+.nav-links a {
+    height: 100%;
+    min-height: 0;
+}
+
+.nav-links img,
+.nav-links a:first-child img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Section content reflows with Flexbox while preserving each artwork image's aspect ratio. */
+.content-stage {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.35rem, 1.2svh, 0.9rem);
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: clamp(0.35rem, 1vw, 1rem);
+    padding-bottom: clamp(7rem, 22svh, 13rem);
+    isolation: isolate;
+}
+
+.section-sign {
+    position: absolute;
+    z-index: 2;
+    left: 8%;
+    bottom: calc(var(--hill-height) - clamp(10%, 15svh, 18%));
+    display: block;
+    width: min(25vw, 42svh, 28rem);
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
+    --reveal-rest-offset: 12%;
+    transform-origin: 50% 100%;
+    will-change: transform, opacity;
+}
+
+.section-hill {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--hill-height);
+    object-fit: cover;
+    object-position: center top;
+    pointer-events: none;
+}
+
+.offerings {
+    --hill-height: min(52svh, 53.18vw);
+}
+
+.visit,
+.connect,
+.donate {
+    --hill-height: min(52svh, 53.18vw);
+}
+
+.visit {
+    --hill-height: calc(100svh - var(--nav-height));
+}
+
+.offerings-intro {
+    display: block;
+    flex: 0 1 auto;
+    width: min(76vw, 39rem);
+    max-height: 10svh;
+    object-fit: contain;
+}
+
+.offerings-list {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: center;
+    gap: clamp(0.35rem, 1.2vw, 1rem);
+    width: 100%;
+    min-height: 0;
+}
+
+.offering-card {
+    display: flex;
+    flex: 1 1 calc(25% - 1rem);
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    padding: clamp(0.2rem, 0.8vw, 0.65rem);
+}
+
+.offering-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 28svh;
+    object-fit: contain;
+}
+
+.offering-tea {
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.offering-tea img:first-child {
+    height: 74%;
+}
+
+.offering-tea .offering-action-art {
+    height: 24%;
+}
+
+.visit-stage {
+    gap: clamp(0.25rem, 0.8svh, 0.65rem);
+}
+
+.visit-main {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 2vw, 1.5rem);
+    width: 100%;
+    min-height: 0;
+}
+
+.visit-copy {
+    display: flex;
+    flex: 1 1 55%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.3rem, 0.8vw, 0.7rem);
+    min-width: 0;
+}
+
+.visit-copy img {
+    display: block;
+    flex: 1 1 45%;
+    width: 100%;
+    max-height: 24svh;
+    object-fit: contain;
+}
+
+.visit-scene {
+    display: flex;
+    flex: 1 1 35%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-width: 0;
+    min-height: 0;
+}
+
+.visit-garden {
+    display: block;
+    width: min(100%, 18rem);
+    max-height: 21svh;
+    object-fit: contain;
+}
+
+.visit-features {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: 100%;
+}
+
+.visit-features img {
+    display: block;
+    flex: 1 1 45%;
+    width: 100%;
+    max-height: 6svh;
+    object-fit: contain;
+}
+
+.visit-footer {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 0;
+}
+
+.visit-figures {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: clamp(0.2rem, 1vw, 0.75rem);
+    min-width: 0;
+}
+
+.visit-figures img {
+    display: block;
+    width: auto;
+    max-width: 28%;
+    height: clamp(3.5rem, 14svh, 8rem);
+    object-fit: contain;
+}
+
+.visit-actions {
+    display: flex;
+    flex: 0 1 35%;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+.visit-actions img {
+    display: block;
+    width: 100%;
+    max-width: 17rem;
+    max-height: 5svh;
+    object-fit: contain;
+}
+
+.visit-actions a {
+    display: block;
+    width: 100%;
+}
+
+.connect-stage {
+    justify-content: flex-start;
+    padding-top: clamp(0.5rem, 3svh, 2rem);
+}
+
+.contact-details-art {
+    position: relative;
+    z-index: 4;
+    display: block;
+    flex: 1 1 auto;
+    width: min(92%, 46rem);
+    max-height: 48svh;
+    object-fit: contain;
+}
+
+.contact-links {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.4rem, 1.2vw, 1rem);
+    width: 100%;
+}
+
+.contact-links a {
+    color: #14583f;
+    font: 600 clamp(0.7rem, 1.5vw, 1rem) / 1.2 system-ui, sans-serif;
+    text-align: center;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+}
+
+.donate-stage {
+    gap: clamp(0.25rem, 1svh, 0.75rem);
+}
+
+.donate-main {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 2vw, 1.5rem);
+    width: 100%;
+    min-height: 0;
+}
+
+.donate-copy {
+    display: block;
+    flex: 1 1 28%;
+    width: 100%;
+    max-height: 24svh;
+    object-fit: contain;
+}
+
+.donate-map {
+    display: block;
+    flex: 1 1 45%;
+    width: 100%;
+    max-height: 48svh;
+    object-fit: contain;
+}
+
+.donate-welcome {
+    display: block;
+    flex: 0 1 18%;
+    width: 100%;
+    max-height: 20svh;
+    object-fit: contain;
+}
+
+@media (max-width: 40rem) {
+    .content-stage {
+        gap: 0.35rem;
+        padding: 0.35rem;
+        padding-bottom: clamp(7rem, 22svh, 11rem);
+    }
+
+    .section-sign {
+        left: 4%;
+        bottom: calc(var(--hill-height) - clamp(5%, 8svh, 10%));
+        --reveal-rest-offset: 0%;
+        width: min(30vw, 28svh);
+        height: auto;
+    }
+
+    .offerings-intro {
+        width: min(88vw, 31rem);
+        max-height: 9svh;
+    }
+
+    .offerings-list {
+        gap: 0.2rem;
+    }
+
+    .offering-card {
+        flex-basis: calc(50% - 0.2rem);
+        max-height: 19svh;
+        padding: 0.15rem;
+    }
+
+    .offering-card img {
+        max-height: 18svh;
+    }
+
+    .visit-main {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .visit-copy {
+        flex: 1 1 auto;
+        gap: 0.2rem;
+    }
+
+    .visit-copy img {
+        flex-basis: 100%;
+        max-height: 16svh;
+    }
+
+    .visit-scene {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .visit-garden {
+        width: auto;
+        max-width: 42%;
+        max-height: 13svh;
+    }
+
+    .visit-features {
+        flex: 1 1 54%;
+        flex-direction: column;
+    }
+
+    .visit-features img {
+        max-height: 5svh;
+    }
+
+    .visit-figures img {
+        height: clamp(2.75rem, 10svh, 5rem);
+    }
+
+    .visit-actions {
+        flex-basis: 42%;
+    }
+
+    .visit-actions img {
+        max-height: 4svh;
+    }
+
+    .contact-details-art {
+        width: min(100%, 32rem);
+        max-height: 42svh;
+    }
+
+    .contact-links {
+        gap: 0.25rem 0.6rem;
+    }
+
+    .contact-links a {
+        font-size: clamp(0.65rem, 2.8vw, 0.9rem);
+    }
+
+    .donate-main {
+        flex-wrap: wrap;
+        align-content: center;
+        gap: 0.25rem 0.5rem;
+    }
+
+    .donate-copy {
+        flex: 1 1 100%;
+        max-height: 13svh;
+    }
+
+    .donate-map {
+        flex: 1 1 66%;
+        width: 66%;
+        max-height: 38svh;
+    }
+
+    .donate-welcome {
+        flex: 0 1 28%;
+        max-height: 17svh;
+    }
+}
+
+@media (min-width: 64rem) {
+    .visit-copy img {
+        max-height: 30svh;
+    }
+
+    .visit-garden {
+        max-height: 26svh;
+    }
+
+    .donate-copy {
+        max-height: 30svh;
+    }
+}
